@@ -111,8 +111,9 @@ open class Store<State>: StoreType {
     }
     sinks.update(with: sink)
     
-    return {
-      self.sinks.remove(sink)
+    return { [weak self] in
+      sink.cancel()
+      self?.sinks.remove(sink)
     }
   }
   

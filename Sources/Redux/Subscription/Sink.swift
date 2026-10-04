@@ -35,6 +35,11 @@ public final class Sink<T>: Equatable, Hashable {
     observer?(oldValue, newValue)
   }
   
+  /// Stop forwarding state updates and release the observer
+  func cancel() {
+    observer = nil
+  }
+  
   public static func == (lhs: Sink<T>, rhs: Sink<T>) -> Bool {
     lhs === rhs
   }

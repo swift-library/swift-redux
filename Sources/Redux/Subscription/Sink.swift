@@ -13,15 +13,19 @@
 //
 //===----------------------------------------------------------------------===//
 
-public struct Sink<T>: Equatable, Hashable {
+/// A subscription that forwards state updates to its observer.
+///
+/// Each sink is a distinct object: two sinks are equal only when they are the same instance.
+public final class Sink<T>: Equatable, Hashable {
   
   public typealias Observer = (T?, T) -> Void
   
   var observer: Observer?
   
-  /// Create redux subscription will sink closure
-  /// - Parameter forward: given the caller a sink cloure to forward result
-  /// - Discussion: `(State?, State) -> Void)` is observer closure of the sink to forward redux state update
+  /// Create redux subscription with sink closure
+  /// - Parameters:
+  ///   - sink: receives the sink's forwarding closure, `(oldState, newState) -> Void`, to forward redux state updates
+  ///   - observer: receives the previous state, if any, and the new state
   public init(sink: (@escaping (T?, T) -> Void) -> Void = { _ in }, observer: Observer? = nil) {
     self.observer = observer
     sink(forward)
@@ -31,15 +35,11 @@ public struct Sink<T>: Equatable, Hashable {
     observer?(oldValue, newValue)
   }
   
-  private var bitPattern: Int {
-    unsafeBitCast(self, to: Int.self)
-  }
-  
   public static func == (lhs: Sink<T>, rhs: Sink<T>) -> Bool {
-    lhs.bitPattern == rhs.bitPattern
+    lhs === rhs
   }
   
   public func hash(into hasher: inout Hasher) {
-    hasher.combine(bitPattern)
+    hasher.combine(ObjectIdentifier(self))
   }
 }

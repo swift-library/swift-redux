@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml"><img src="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI"></a>
   <img src="https://img.shields.io/badge/Swift-5.7%2B-F05138" alt="Swift 5.7+">
   <img src="https://img.shields.io/badge/platforms-macOS%2012%2B%20%7C%20iOS%2013%2B%20%7C%20watchOS%207%2B%20%7C%20tvOS%2013%2B-lightgrey" alt="Platforms: macOS 12+ | iOS 13+ | watchOS 7+ | tvOS 13+">
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0 WITH Swift-exception"></a>

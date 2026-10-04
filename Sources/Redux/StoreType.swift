@@ -34,8 +34,8 @@ public protocol StoreType<State>: ActionDispatchingType {
   /// Subscribe state update from store with state selector.
   /// - Parameters:
   ///   - listener: listener need receive state updates from store
-  ///   - selector: A closure that receives a simple subscription and can return a transformed subscription.
-  ///   Subscriptions can be transformed to only select a subset of the state, or to skip certain state updates.
+  ///   - selector: A function that selects the part of the state that the listener receives.
+  ///   The listener receives the selected value on every state update, even when that value did not change.
   /// - Returns: unsubscribe function
   func subscribe<Substate>(_ listener: @escaping (Substate) -> Void, selector: @escaping Selector<State, Substate>) -> Unsubscribe
 }
@@ -52,8 +52,8 @@ public extension StoreType {
   /// Subscribe state update from store with state selector.
   /// - Parameters:
   ///   - listener: listener type need receive state updates from store
-  ///   - selector: A closure that receives a simple subscription and can return a transformed subscription.
-  ///   Subscriptions can be transformed to only select a subset of the state, or to skip certain state updates.
+  ///   - selector: A function that selects the part of the state that the listener receives.
+  ///   The listener receives the selected value on every state update, even when that value did not change.
   /// - Returns: unsubscribe function
   func subscribe<Substate>(_ listener: any ListenerType<Substate>, selector: @escaping Selector<State, Substate>) -> Unsubscribe {
     subscribe(listener.newState, selector: selector)

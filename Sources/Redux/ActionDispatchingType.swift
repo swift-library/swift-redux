@@ -20,7 +20,7 @@ public protocol ActionDispatchingType {
   ///
   /// Usage:
   ///   ```
-  ///   [store dispatch:action]
+  ///   store.dispatch(CounterAction.increment)
   ///   ```
   /// - Parameter action: action to dispatch
   func dispatch(_ action: ActionType)

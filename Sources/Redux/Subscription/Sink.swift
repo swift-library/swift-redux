@@ -43,21 +43,3 @@ public struct Sink<T>: Equatable, Hashable {
     hasher.combine(bitPattern)
   }
 }
-
-// reselect state
-extension Sink {
-  
-  typealias State = T
-  
-  mutating func select<Substate>(_ keyPath: KeyPath<State, Substate>) -> Sink<Substate> {
-    return select { $0[keyPath: keyPath] }
-  }
-  
-  mutating func select<Substate>(_ selector: @escaping Selector<State, Substate>) -> Sink<Substate> {
-    return .init { sink in
-      observer = {
-        sink($0.map(selector), selector($1))
-      }
-    }
-  }
-}

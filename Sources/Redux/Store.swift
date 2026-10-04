@@ -99,11 +99,9 @@ open class Store<State>: StoreType {
     _ listener: @escaping (Substate) -> Void,
     selector: @escaping Selector<State, Substate>) -> Unsubscribe
   {
-    var sink = Sink<State>()
-    var select = sink.select(selector)
-    select.observer = {
-      listener($1)
-    }
+    let sink = Sink<State>(observer: {
+      listener(selector($1))
+    })
     return subscribe(sink)
   }
   

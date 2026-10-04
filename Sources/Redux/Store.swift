@@ -40,7 +40,7 @@ open class Store<State>: StoreType {
 
   private var sinks: Set<Sink<State>> = []
   
-  private var idle = AtomicBool(false)
+  private let isDispatching = AtomicBool(false)
     
   /// Create store with reducer, initial state and middlewares.
   ///
@@ -70,18 +70,20 @@ open class Store<State>: StoreType {
   }
   
   /// Dispatch action to reducer and update state
+  ///
+  /// A reducer must not dispatch actions: an action that arrives while the reducer is running stops the program.
   /// - Parameter action: action to dispatch
   open func _dispatch(_ action: ActionType) {
-    guard idle.load(ordering: .relaxed) else {
+    guard isDispatching.compareExchange(expected: false, desired: true, ordering: .acquiring).exchanged else {
       fatalError(
         """
-        Due to state consistency, swift redux can not dispatch action concurrently, dispatch: \(action) on flying."
+        Reducers may not dispatch actions. Store received \(action) while its reducer was running; \
+        it does not support dispatching from a reducer or from several threads at once.
         """)
     }
     
-    idle.store(false, ordering: .relaxed)
     let newState = reducer(action, state)
-    idle.store(true, ordering: .relaxed)
+    isDispatching.store(false, ordering: .releasing)
     
     state = newState
   }

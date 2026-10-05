@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml"><img src="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI"></a>
   <img src="https://img.shields.io/badge/Swift-5.7%2B-F05138" alt="Swift 5.7+">
-  <img src="https://img.shields.io/badge/platforms-macOS%2012%2B%20%7C%20iOS%2013%2B%20%7C%20watchOS%207%2B%20%7C%20tvOS%2013%2B-lightgrey" alt="Platforms: macOS 12+ | iOS 13+ | watchOS 7+ | tvOS 13+">
+  <img src="https://img.shields.io/badge/platforms-macOS%2012%2B%20%7C%20iOS%2015%2B%20%7C%20watchOS%209%2B%20%7C%20tvOS%2015%2B-lightgrey" alt="Platforms: macOS 12+ | iOS 15+ | watchOS 9+ | tvOS 15+">
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0 WITH Swift-exception"></a>
 </p>
 
@@ -264,7 +264,7 @@ no effect.
 ## Requirements
 
 - Swift 5.7 or later
-- macOS 12 or later, iOS 13 or later, watchOS 7 or later, or tvOS 13 or later
+- macOS 12 or later, iOS 15 or later, watchOS 9 or later, or tvOS 15 or later
 
 ## Documentation
 

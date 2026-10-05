@@ -13,34 +13,54 @@
 //
 //===----------------------------------------------------------------------===//
 
+import class Foundation.NSRecursiveLock
+
 /// This class is the default implementation of the `StoreType` protocol. You will use this store in most
 /// of your applications. You shouldn't need to implement your own store.
 /// You initialize the store with a reducer and an initial application state. If your app has multiple
 /// reducers, combine them into one `Reducer` function that calls each of them.
-open class Store<State>: StoreType {
-  
-  public var middleware: [Middleware<State>] {
-    didSet {
-      _underlyingDispatch = underlyingDispatch()
-    }
-  }
-  
-  private var reducer: Reducer<State>
+///
+/// A store is safe to use from several threads. Dispatching, subscribing and unsubscribing are serialized
+/// by a recursive lock, so a dispatch from another thread waits until the current one finishes, while
+/// middleware and listeners can dispatch again on the same thread. Listeners run while the store holds
+/// that lock, so a listener must not block on another thread that uses the same store.
+open class Store<State>: StoreType, @unchecked Sendable {
 
-  public private(set) var state: State! {
-    didSet {
-      sinks.forEach {
-        $0.forward(oldValue, newValue: state)
+  public var middleware: [Middleware<State>] {
+    get { withLock { _middleware } }
+    set {
+      withLock {
+        _middleware = newValue
+        _underlyingDispatch = underlyingDispatch()
       }
     }
   }
-  
+
+  /// The current state of the store.
+  public var state: State! {
+    withLock { _state }
+  }
+
+  private let lock = NSRecursiveLock()
+
+  private var reducer: Reducer<State>
+
+  private var _middleware: [Middleware<State>]
+
+  private var _state: State! {
+    didSet {
+      sinks.forEach {
+        $0.forward(oldValue, newValue: _state)
+      }
+    }
+  }
+
   private lazy var _underlyingDispatch: DispatchAction = underlyingDispatch()
 
   private var sinks: Set<Sink<State>> = []
-  
-  private let isDispatching = AtomicBool(false)
-    
+
+  private var isReducing = false
+
   /// Create store with reducer, initial state and middlewares.
   ///
   /// - Parameters:
@@ -53,47 +73,51 @@ open class Store<State>: StoreType {
     middleware: [Middleware<State>] = []
   ) {
     self.reducer = reducer
-    self.middleware = middleware
-    
+    self._middleware = middleware
+
     if let state = state {
-      self.state = state
+      self._state = state
     } else {
       dispatch(BuiltInAction.initialize)
     }
   }
-  
+
   /// Dispatch action to middlewares, reducer and update state
   /// - Parameter action: action to dispatch
   open func dispatch(_ action: ActionType) {
-    _underlyingDispatch(action)
+    withLock {
+      _underlyingDispatch(action)
+    }
   }
-  
+
   /// Dispatch action to reducer and update state
   ///
   /// A reducer must not dispatch actions: an action that arrives while the reducer is running stops the program.
   /// - Parameter action: action to dispatch
   open func _dispatch(_ action: ActionType) {
-    guard isDispatching.compareExchange(expected: false, desired: true, ordering: .acquiring).exchanged else {
-      fatalError(
-        """
-        Reducers may not dispatch actions. Store received \(action) while its reducer was running; \
-        it does not support dispatching from a reducer or from several threads at once.
-        """)
+    withLock {
+      guard !isReducing else {
+        fatalError(
+          """
+          Reducers may not dispatch actions. Store received \(action) while its reducer was running.
+          """)
+      }
+
+      isReducing = true
+      let newState = reducer(action, _state)
+      isReducing = false
+
+      _state = newState
     }
-    
-    let newState = reducer(action, state)
-    isDispatching.store(false, ordering: .releasing)
-    
-    state = newState
   }
-    
+
   public func subscribe(_ listener: @escaping (State) -> Void) -> Unsubscribe {
     let sink = Sink(observer: {
       listener($1)
     })
     return subscribe(sink)
   }
-  
+
   public func subscribe<Substate>(
     _ listener: @escaping (Substate) -> Void,
     selector: @escaping Selector<State, Substate>) -> Unsubscribe
@@ -103,24 +127,38 @@ open class Store<State>: StoreType {
     })
     return subscribe(sink)
   }
-  
+
   private func subscribe(_ sink: Sink<State>) -> Unsubscribe {
-    state.flatMap {
-      sink.forward(nil, newValue: $0)
+    withLock {
+      _state.flatMap {
+        sink.forward(nil, newValue: $0)
+      }
+      sinks.update(with: sink)
     }
-    sinks.update(with: sink)
-    
+
     return { [weak self] in
-      sink.cancel()
-      self?.sinks.remove(sink)
+      guard let self else {
+        sink.cancel()
+        return
+      }
+      self.withLock {
+        sink.cancel()
+        _ = self.sinks.remove(sink)
+      }
     }
   }
-  
+
+  private func withLock<Result>(_ body: () throws -> Result) rethrows -> Result {
+    lock.lock()
+    defer { lock.unlock() }
+    return try body()
+  }
+
   /// Create dispatch action chain for middlewares and reducer
   ///
   /// - Returns: an dispatch action chain with closure type
   private func underlyingDispatch() -> DispatchAction {
-    return middleware
+    return _middleware
       .reversed()
       .reduce({ [unowned self] action in
         self._dispatch(action)

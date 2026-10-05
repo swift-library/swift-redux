@@ -62,8 +62,7 @@ targets: [
 ]
 ```
 
-swift-redux depends on [Swift Atomics](https://github.com/apple/swift-atomics),
-from version 1.1.0 up to the next major version.
+swift-redux has no dependencies.
 
 ## Quick start
 
@@ -185,10 +184,14 @@ print(store.state.items)
 stores the new state and notifies subscribers, synchronously on the calling
 thread. `state` holds the current state.
 
-`Store` is not thread-safe, so dispatch, subscribe, and unsubscribe on a single
-thread, such as the main thread. Middleware and listeners can dispatch actions,
-but a reducer must not: an action dispatched while the reducer is running stops
-the program with a fatal error.
+`Store` is safe to use from several threads. It serializes dispatching,
+subscribing, and unsubscribing with a recursive lock: a dispatch from another
+thread waits for the current one to finish, and middleware and listeners can
+dispatch again on the same thread. A reducer must not dispatch: an action
+dispatched while the reducer is running stops the program with a fatal error.
+Listeners run while the store holds its lock, so a listener must not block on
+another thread that uses the same store, for example with
+`DispatchQueue.main.sync`.
 
 ### Middleware
 

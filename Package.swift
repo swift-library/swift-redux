@@ -7,7 +7,7 @@ let targets = ["Redux", "ReduxDSL", "ReduxThunk", "ReduxComponent", "ReduxShim"]
 
 let package = Package(
   name: "swift-redux",
-  platforms: [.macOS(.v12), .iOS(.v13), .watchOS(.v7), .tvOS(.v13)],
+  platforms: [.macOS(.v12), .iOS(.v15), .watchOS(.v9), .tvOS(.v15)],
   products: [
     // Products define the executables and libraries a package produces, and make them visible to other packages.
     .library(

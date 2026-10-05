@@ -194,4 +194,18 @@ final class DispatchTests: XCTestCase {
 
     XCTAssertNil(released)
   }
+
+  func testConcurrentDispatchPreservesCount() {
+    let store = Store(state: CounterState(), reducer: counterReducer)
+    var notifications = 0
+    let unsubscribe = store.subscribe { (_: CounterState) in notifications += 1 }
+
+    DispatchQueue.concurrentPerform(iterations: 1_000) { _ in
+      store.dispatch(CounterAction.increment)
+    }
+    unsubscribe()
+
+    XCTAssertEqual(store.state.count, 1_000)
+    XCTAssertEqual(notifications, 1_001)
+  }
 }

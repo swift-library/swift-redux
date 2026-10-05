@@ -125,7 +125,7 @@ open class Store<State>: StoreType {
       .reduce({ [unowned self] action in
         self._dispatch(action)
       }, { [weak self] nextDispatch, middleware in
-        middleware({ self?.state })(self?.dispatch ?? { _ in })(nextDispatch)
+        middleware({ [weak self] in self?.state })({ [weak self] in self?.dispatch($0) })(nextDispatch)
       })
   }
 }

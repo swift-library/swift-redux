@@ -170,4 +170,28 @@ final class DispatchTests: XCTestCase {
     XCTAssertEqual(calls, 1)
     XCTAssertEqual(store.state.count, 3)
   }
+
+  func testStoreReleasedWithMiddleware() {
+    let labelAfterIncrement: Middleware<CounterState> = { getState in
+      { dispatch in
+        { next in
+          { action in
+            next(action)
+            if case CounterAction.increment = action {
+              dispatch(CounterAction.setLabel("count \(getState()?.count ?? 0)"))
+            }
+          }
+        }
+      }
+    }
+    weak var released: Store<CounterState>?
+    do {
+      let store = Store(state: CounterState(), reducer: counterReducer, middleware: [labelAfterIncrement])
+      store.dispatch(CounterAction.increment)
+      XCTAssertEqual(store.state, CounterState(count: 1, label: "count 1"))
+      released = store
+    }
+
+    XCTAssertNil(released)
+  }
 }

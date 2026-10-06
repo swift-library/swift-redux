@@ -269,6 +269,9 @@ no effect.
 
 ## Documentation
 
+- [Module documentation](Sources/Redux/Redux.docc/Redux.md):
+  the public API reference and module overview.
+
 - [CHANGELOG.md](CHANGELOG.md) lists notable changes, including changes to
   the public API.
 - Doc comments in the source describe `Store`, its protocols, and

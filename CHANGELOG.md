@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Require Swift 6.0 or later. Upgrade the toolchain before adopting this release.
+
 ## 0.1.0
 
 The first tagged release.

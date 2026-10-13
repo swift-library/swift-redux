@@ -23,5 +23,28 @@
         "command": "xcodebuild -scheme swift-redux-Package -destination generic/platform=iOS -derivedDataPath .build/xcode build"
       }
     ]
+  },
+  "minimum_swift": "6.0",
+  "platforms": {
+    "iOS": [
+      18,
+      26,
+      27
+    ],
+    "macOS": [
+      15,
+      26,
+      27
+    ],
+    "tvOS": [
+      18,
+      26,
+      27
+    ],
+    "watchOS": [
+      11,
+      26,
+      27
+    ]
   }
 }

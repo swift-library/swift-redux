@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml"><img src="https://github.com/swift-library/swift-redux/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Swift-5.7%2B-F05138" alt="Swift 5.7+">
+  <img src="https://img.shields.io/badge/Swift-6.0%2B-F05138" alt="Swift 6.0+">
   <img src="https://img.shields.io/badge/platforms-macOS%2012%2B%20%7C%20iOS%2015%2B%20%7C%20watchOS%209%2B%20%7C%20tvOS%2015%2B-lightgrey" alt="Platforms: macOS 12+ | iOS 15+ | watchOS 9+ | tvOS 15+">
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0 WITH Swift-exception"></a>
 </p>
@@ -264,7 +264,7 @@ no effect.
 
 ## Requirements
 
-- Swift 5.7 or later
+- Swift 6.0 or later
 - macOS 12 or later, iOS 15 or later, watchOS 9 or later, or tvOS 15 or later
 
 ## Documentation
@@ -283,7 +283,7 @@ no effect.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request, and run
 `Scripts/check` to check your changes. This project follows the
-[code of conduct](CODE_OF_CONDUCT.md). Releases follow the swift-library
+[code of conduct](https://github.com/swift-library/.github/blob/master/CODE_OF_CONDUCT.md). Releases follow the swift-library
 [versioning standard](https://github.com/swift-library/.github/blob/master/VERSIONING.md).
 
 ## License

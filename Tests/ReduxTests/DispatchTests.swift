@@ -13,8 +13,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import XCTest
 import Redux
+import XCTest
 
 final class DispatchTests: XCTestCase {
 
@@ -31,10 +31,12 @@ final class DispatchTests: XCTestCase {
 
   func testProvidedInitialStateSkipsReducer() {
     var reducerCalls = 0
-    let store = Store(state: CounterState(count: 5), reducer: { action, state in
-      reducerCalls += 1
-      return counterReducer(action, state)
-    })
+    let store = Store(
+      state: CounterState(count: 5),
+      reducer: { action, state in
+        reducerCalls += 1
+        return counterReducer(action, state)
+      })
 
     XCTAssertEqual(reducerCalls, 0)
     XCTAssertEqual(store.state.count, 5)
@@ -42,14 +44,18 @@ final class DispatchTests: XCTestCase {
 
   func testNilInitialStateComesFromReducer() {
     var received: [(action: ActionType, state: CounterState?)] = []
-    let store = Store<CounterState>(state: nil, reducer: { action, state in
-      received.append((action, state))
-      return state ?? CounterState(count: 10, label: "initial")
-    })
+    let store = Store<CounterState>(
+      state: nil,
+      reducer: { action, state in
+        received.append((action, state))
+        return state ?? CounterState(count: 10, label: "initial")
+      })
 
     XCTAssertEqual(received.count, 1)
-    if case BuiltInAction.initialize? = received.first?.action {} else {
-      XCTFail("expected BuiltInAction.initialize, received \(String(describing: received.first?.action))")
+    if case BuiltInAction.initialize? = received.first?.action {
+    } else {
+      XCTFail(
+        "expected BuiltInAction.initialize, received \(String(describing: received.first?.action))")
     }
     XCTAssertNil(received.first?.state ?? nil)
     XCTAssertEqual(store.state, CounterState(count: 10, label: "initial"))
@@ -84,13 +90,15 @@ final class DispatchTests: XCTestCase {
 
     store.dispatch(CounterAction.increment)
 
-    XCTAssertEqual(log, [
-      "first before 0",
-      "second before 0",
-      "reducer",
-      "second after 1",
-      "first after 1",
-    ])
+    XCTAssertEqual(
+      log,
+      [
+        "first before 0",
+        "second before 0",
+        "reducer",
+        "second after 1",
+        "first after 1",
+      ])
   }
 
   func testMiddlewareCanDropAction() {
@@ -186,7 +194,8 @@ final class DispatchTests: XCTestCase {
     }
     weak var released: Store<CounterState>?
     do {
-      let store = Store(state: CounterState(), reducer: counterReducer, middleware: [labelAfterIncrement])
+      let store = Store(
+        state: CounterState(), reducer: counterReducer, middleware: [labelAfterIncrement])
       store.dispatch(CounterAction.increment)
       XCTAssertEqual(store.state, CounterState(count: 1, label: "count 1"))
       released = store

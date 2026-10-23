@@ -11,8 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import XCTest
 import Redux
+import XCTest
 
 final class SubscriptionTests: XCTestCase {
 

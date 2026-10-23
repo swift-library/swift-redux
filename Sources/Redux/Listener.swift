@@ -18,6 +18,6 @@ public typealias Listener<T> = (T) -> Void
 /// Role-specific protocol
 public protocol ListenerType<State>: AnyObject {
   associatedtype State
-  
+
   func newState(_ state: State)
 }

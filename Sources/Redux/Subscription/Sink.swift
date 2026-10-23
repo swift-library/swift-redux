@@ -17,11 +17,11 @@
 ///
 /// Each sink is a distinct object: two sinks are equal only when they are the same instance.
 public final class Sink<T>: Equatable, Hashable {
-  
+
   public typealias Observer = (T?, T) -> Void
-  
+
   var observer: Observer?
-  
+
   /// Create redux subscription with sink closure
   /// - Parameters:
   ///   - sink: receives the sink's forwarding closure, `(oldState, newState) -> Void`, to forward redux state updates
@@ -30,20 +30,20 @@ public final class Sink<T>: Equatable, Hashable {
     self.observer = observer
     sink(forward)
   }
-    
+
   func forward(_ oldValue: T?, newValue: T) {
     observer?(oldValue, newValue)
   }
-  
+
   /// Stop forwarding state updates and release the observer
   func cancel() {
     observer = nil
   }
-  
+
   public static func == (lhs: Sink<T>, rhs: Sink<T>) -> Bool {
     lhs === rhs
   }
-  
+
   public func hash(into hasher: inout Hasher) {
     hasher.combine(ObjectIdentifier(self))
   }

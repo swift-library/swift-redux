@@ -13,27 +13,30 @@
 
 // Exit tests need Swift Testing from Swift 6.2 or later.
 #if compiler(>=6.2)
-#if canImport(Testing) && (os(macOS) || os(Linux) || os(Windows))
-import Testing
-import Redux
+  #if canImport(Testing) && (os(macOS) || os(Linux) || os(Windows))
+    import Testing
+    import Redux
 
-@Suite struct ReentrancyTests {
+    @Suite struct ReentrancyTests {
 
-  @Test func dispatchFromReducerStopsTheProgram() async {
-    let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
-      var store: Store<CounterState>?
-      store = Store(state: CounterState(), reducer: { action, state in
-        if case CounterAction.increment = action {
-          store?.dispatch(CounterAction.decrement)
+      @Test func dispatchFromReducerStopsTheProgram() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent])
+        {
+          var store: Store<CounterState>?
+          store = Store(
+            state: CounterState(),
+            reducer: { action, state in
+              if case CounterAction.increment = action {
+                store?.dispatch(CounterAction.decrement)
+              }
+              return counterReducer(action, state)
+            })
+          store?.dispatch(CounterAction.increment)
         }
-        return counterReducer(action, state)
-      })
-      store?.dispatch(CounterAction.increment)
-    }
 
-    let standardError = String(decoding: result?.standardErrorContent ?? [], as: UTF8.self)
-    #expect(standardError.contains("Reducers may not dispatch actions"))
-  }
-}
-#endif
+        let standardError = String(decoding: result?.standardErrorContent ?? [], as: UTF8.self)
+        #expect(standardError.contains("Reducers may not dispatch actions"))
+      }
+    }
+  #endif
 #endif

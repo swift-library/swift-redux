@@ -15,7 +15,7 @@
 
 /// Role-specific protocol, a redux store and middleware conforms to this protocol
 public protocol ActionDispatchingType {
-  
+
   /// Dispatching an action is the only way to modify the state on a redux store.
   ///
   /// Usage:

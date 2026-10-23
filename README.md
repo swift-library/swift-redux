@@ -100,8 +100,8 @@ Define actions and a reducer, create a store, and retain the unsubscribe closure
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request, and run
-`Scripts/check` to check your changes. This project follows the
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and run its local validation commands
+before opening a pull request. This project follows the
 [code of conduct](https://github.com/swift-library/.github/blob/master/CODE_OF_CONDUCT.md). Releases follow the swift-library
 [versioning standard](https://github.com/swift-library/.github/blob/master/VERSIONING.md).
 

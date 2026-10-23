@@ -13,7 +13,7 @@ let package = Package(
     .library(
       name: "Redux",
       targets: targets),
-    
+
     .library(
       name: "ReduxDynamic",
       type: .dynamic,
@@ -25,22 +25,22 @@ let package = Package(
     .target(
       name: "ReduxShim",
       dependencies: ["Redux"]),
-    
+
     .target(
       name: "ReduxDSL",
       dependencies: ["Redux"]),
-  
+
     .target(
       name: "ReduxComponent",
       dependencies: ["Redux"]),
-  
+
     .target(
       name: "ReduxThunk",
       dependencies: ["Redux"]),
-  
+
     .target(
       name: "Redux"),
-  
+
     .testTarget(
       name: "ReduxTests",
       dependencies: ["Redux"]),

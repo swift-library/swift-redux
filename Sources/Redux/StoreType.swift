@@ -20,32 +20,34 @@ public typealias Unsubscribe = () -> Void
 /// Stores receive actions and use reducers combined with these actions, to calculate state changes.
 /// Upon every state update a store informs all of its subscribers.
 public protocol StoreType<State>: ActionDispatchingType {
-    
+
   associatedtype State
-  
+
   /// The current state of the store.
   var state: State! { get }
-    
+
   /// Subscribe state update from store.
   /// - Parameter listener: listener will receive state updates from store
   /// - Returns: unsubscribe function
   func subscribe(_ listener: @escaping (State) -> Void) -> Unsubscribe
-  
+
   /// Subscribe state update from store with state selector.
   /// - Parameters:
   ///   - listener: listener need receive state updates from store
   ///   - selector: A function that selects the part of the state that the listener receives.
   ///   The listener receives the selected value on every state update, even when that value did not change.
   /// - Returns: unsubscribe function
-  func subscribe<Substate>(_ listener: @escaping (Substate) -> Void, selector: @escaping Selector<State, Substate>) -> Unsubscribe
+  func subscribe<Substate>(
+    _ listener: @escaping (Substate) -> Void, selector: @escaping Selector<State, Substate>
+  ) -> Unsubscribe
 }
 
-public extension StoreType {
-  
+extension StoreType {
+
   /// Subscribe state update from store.
   /// - Parameter listener: listener will receive state updates from store
   /// - Returns: unsubscribe function
-  func subscribe(_ listener: any ListenerType<State>) -> Unsubscribe {
+  public func subscribe(_ listener: any ListenerType<State>) -> Unsubscribe {
     subscribe(listener.newState)
   }
 
@@ -55,7 +57,9 @@ public extension StoreType {
   ///   - selector: A function that selects the part of the state that the listener receives.
   ///   The listener receives the selected value on every state update, even when that value did not change.
   /// - Returns: unsubscribe function
-  func subscribe<Substate>(_ listener: any ListenerType<Substate>, selector: @escaping Selector<State, Substate>) -> Unsubscribe {
+  public func subscribe<Substate>(
+    _ listener: any ListenerType<Substate>, selector: @escaping Selector<State, Substate>
+  ) -> Unsubscribe {
     subscribe(listener.newState, selector: selector)
   }
 }

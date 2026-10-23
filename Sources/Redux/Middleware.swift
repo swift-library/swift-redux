@@ -19,5 +19,7 @@
 ///   - dispatch: refers to the `dispatch(_ action:)` function on store for middleware to dispatch additional action
 ///   - nextDispatch: refers to next action dispatching type, reducer or a another middleware
 /// - Returns: this middleware dispatch action implementation
-/// - Discussion: 
-public typealias Middleware<State> = (_ state: @escaping () -> State?) -> (_ dispatch: @escaping DispatchAction) -> (_ nextDispatch: @escaping DispatchAction) -> DispatchAction
+/// - Discussion:
+public typealias Middleware<State> = (_ state: @escaping () -> State?) -> (
+  _ dispatch: @escaping DispatchAction
+) -> (_ nextDispatch: @escaping DispatchAction) -> DispatchAction

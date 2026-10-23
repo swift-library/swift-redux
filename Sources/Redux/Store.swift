@@ -49,8 +49,8 @@ open class Store<State>: StoreType, @unchecked Sendable {
 
   private var _state: State! {
     didSet {
-      sinks.forEach {
-        $0.forward(oldValue, newValue: _state)
+      for sink in sinks {
+        sink.forward(oldValue, newValue: _state)
       }
     }
   }
@@ -68,8 +68,9 @@ open class Store<State>: StoreType, @unchecked Sendable {
   ///   - reducer: a pure function to modify state with action.
   ///   - middleware: list of middleware to process side effect logic, dispatched before reducer.
   public required init(
-    state: State?, reducer:
-    @escaping Reducer<State>,
+    state: State?,
+    reducer:
+      @escaping Reducer<State>,
     middleware: [Middleware<State>] = []
   ) {
     self.reducer = reducer
@@ -120,8 +121,8 @@ open class Store<State>: StoreType, @unchecked Sendable {
 
   public func subscribe<Substate>(
     _ listener: @escaping (Substate) -> Void,
-    selector: @escaping Selector<State, Substate>) -> Unsubscribe
-  {
+    selector: @escaping Selector<State, Substate>
+  ) -> Unsubscribe {
     let sink = Sink<State>(observer: {
       listener(selector($1))
     })
@@ -158,12 +159,16 @@ open class Store<State>: StoreType, @unchecked Sendable {
   ///
   /// - Returns: an dispatch action chain with closure type
   private func underlyingDispatch() -> DispatchAction {
-    return _middleware
+    return
+      _middleware
       .reversed()
-      .reduce({ [unowned self] action in
-        self._dispatch(action)
-      }, { [weak self] nextDispatch, middleware in
-        middleware({ [weak self] in self?.state })({ [weak self] in self?.dispatch($0) })(nextDispatch)
-      })
+      .reduce(
+        { [unowned self] action in
+          self._dispatch(action)
+        },
+        { [weak self] nextDispatch, middleware in
+          middleware({ [weak self] in self?.state })({ [weak self] in self?.dispatch($0) })(
+            nextDispatch)
+        })
   }
 }

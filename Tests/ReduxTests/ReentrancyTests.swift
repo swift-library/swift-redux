@@ -11,7 +11,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// Exit tests need Swift Testing from Swift 6.2 or later.
 #if compiler(>=6.2)
   #if canImport(Testing) && (os(macOS) || os(Linux) || os(Windows))
     import Testing

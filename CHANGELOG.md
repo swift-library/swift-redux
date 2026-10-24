@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Breaking**: Require Swift 6.3 or later and raise deployment minimums to
+  macOS 15, iOS 18, tvOS 18 and watchOS 11. Upgrade the toolchain and consumer
+  deployment targets before adopting this change.
+
 ## 0.2.0
 
 - Require Swift 6.0 or later. Upgrade the toolchain before adopting this release.

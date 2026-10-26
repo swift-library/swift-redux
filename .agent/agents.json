@@ -1,0 +1,16 @@
+{
+  "instructions": {
+    "agents": ["claude-code", "codex"],
+    "sections": [
+      "swift-library:shared/swift-package-route",
+      "swift-library:shared/code-review-rules"
+    ]
+  },
+  "sources": {
+    "swift-library": {
+      "branch": "master",
+      "git": "github.com/swift-library/.github",
+      "path": ".agent"
+    }
+  }
+}
